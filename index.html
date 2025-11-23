@@ -1,11 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jensen_demo</title>
+    <title>Limb Rotation</title>
+    <style>
+        * {
+            image-rendering: pixelated;
+        }
+
+        body {
+            background-color: rgb(0, 0, 0);
+            font-family: monospace;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .main-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 150px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .button-img {
+            width: 120px;
+            cursor: pointer;
+        }
+
+        .pointer {
+            position: absolute;
+            width: 150px;
+            left: 50%;
+            top: 50%;
+            transform-origin: 100% 50%;
+            transform: translate(-100%, -50%) rotate(0deg);
+            transition: transform 0.1s cubic-bezier(0.25, 0.75, 0.5, 1);
+            ;
+            z-index: 1;
+        }
+
+        .vessel-wrapper {
+            position: relative;
+            width: 280px;
+        }
+
+        .creature {
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(to bottom,
+                    rgba(0, 0, 0, 0.2) 0px,
+                    rgba(0, 0, 0, 0.2) 2px,
+                    rgba(0, 0, 0, 0.5) 2px,
+                    rgba(0, 0, 0, 0.5) 4px);
+            mix-blend-mode: multiply;
+            animation: scanline-flicker 0.15s infinite;
+        }
+
+        .button-img:hover {
+            filter: brightness(1.5) contrast(1.2) drop-shadow(0 0 10px red);
+        }
+
+        @keyframes scanline-flicker {
+            0% {
+                opacity: 0.25;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 0.15;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 0.25;
+                transform: translateY(20px);
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <div class="main-wrapper">
+        <div class="buttons">
+            <img class="button-img" src="assets/button-rust.png" data-rotate="35">
+            <img class="button-img" src="assets/button-rust.png" data-rotate="0">
+            <img class="button-img" src="assets/button-rust.png" data-rotate="-35">
+        </div>
+
+        <div class="vessel-wrapper">
+            <img class="pointer" src="assets/daniel-limb.png">
+            <img class="creature" src="assets/daniel-vessel.png">
+        </div>
+    </div>
+
+    <script>
+        const limb = document.querySelector('.pointer');
+
+        let currentRotation = 0;
+
+        document.querySelectorAll('.button-img').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                const rotation = button.getAttribute('data-rotate');
+                if (currentRotation !== rotation) {
+                    limb.style.transform = `translate(-100%, -50%) rotate(${rotation}deg)`;
+                    currentRotation = rotation;
+                }
+            });
+
+        });
+    </script>
+
 </body>
+
 </html>
